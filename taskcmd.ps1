@@ -266,24 +266,6 @@ While ($true) {
     #Displays the Total CPU Utilization
     $global:cpu = [Math]::round(($countersamples | Where-Object {$_.path -match "processor\(_to"}).CookedValue)
     
-    #Displays Total Percentage on the top of the graph
-    $titlenum = [math]::round($global:cpu)
-    if (($titlenum.tostring()).length -eq 2) {
-        $global:graph[0][7] = ($titlenum.tostring()).substring(0,1)
-        $global:graph[0][8] = ($titlenum.tostring()).substring(1,1)
-        $global:graph[0][6] = "+"
-    }
-    elseif (($titlenum.tostring()).length -eq 1) {
-        $global:graph[0][8] = ($titlenum.tostring()).substring(0,1)
-        $global:graph[0][7] = "+"
-        $global:graph[0][6] = "+"
-    }
-    elseif (($titlenum.tostring()).length -eq 3) {
-        $global:graph[0][7] = ($titlenum.tostring()).substring(1,1)
-        $global:graph[0][8] = ($titlenum.tostring()).substring(2,1)
-        $global:graph[0][6] = ($titlenum.tostring()).substring(0,1)
-    }
-
     #update the graph data
     if ($global:crow -eq 10){
 
@@ -388,33 +370,40 @@ While ($true) {
         copyRow10ToRow9
         updaterow10
 
-    }  
+    }
+    
     #Draws the Graph
     $CounterSamples | Group-Object { Split-Path $_.Path } | Where-Object {$_.Group[1].InstanceName -notmatch "^Idle|_Total|System$"} | Sort-Object -Property {$_.Group[1].CookedValue} -Descending | Select-Object -First $TotalList | Format-Table @{Name="ProcessId";Expression={$_.Group[0].CookedValue}},@{Name="ProcessorUsage";Expression={[System.Math]::Round($_.Group[1].CookedValue/1/$env:NUMBER_OF_PROCESSORS,2)}},@{Name="ProcessName";Expression={$_.Group[1].InstanceName}}
     #Lines 1-12
     Write-Host $global:graph[0][0,1] -NoNewline;Write-Host "" $global:graph[0][2,3,4] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[0][5] ""-NoNewline;     
-    if (($titlenum.tostring()).length -eq 2) {
-        write-host $global:graph[0][6] "" -NoNewline
+    if (($global:cpu.tostring()).length -eq 2) {
+        $global:graph[0][7] = ($global:cpu.tostring()).substring(0,1)
+        $global:graph[0][8] = ($global:cpu.tostring()).substring(1,1)
+        write-host "+ " -NoNewline
         write-host $global:graph[0][7,8,9] "" -ForegroundColor blue -NoNewline
     }
-    elseif (($titlenum.tostring()).length -eq 1) {
-        write-host $global:graph[0][6,7] "" -NoNewline
+    elseif (($global:cpu.tostring()).length -eq 1) {
+        $global:graph[0][8] = ($global:cpu.tostring()).substring(0,1)
+        write-host "+ + " -NoNewline
         write-host $global:graph[0][8,9] "" -ForegroundColor blue -NoNewline
     }
-    elseif (($titlenum.tostring()).length -eq 3) {
+    elseif (($global:cpu.tostring()).length -eq 3) {
+        $global:graph[0][7] = ($global:cpu.tostring()).substring(1,1)
+        $global:graph[0][8] = ($global:cpu.tostring()).substring(2,1)
+        $global:graph[0][6] = ($global:cpu.tostring()).substring(0,1)
         write-host $global:graph[0][6,7,8,9] ""-ForegroundColor blue -NoNewline
     }
     Write-Host $global:graph[0][10,11] "   " $cpuinfo.name
-    Write-Host $global:graph[1][0] -NoNewline; Write-Host "" $global:graph[1][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[1][11]
-    Write-Host $global:graph[2][0] -NoNewline; Write-Host "" $global:graph[2][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[2][11] "   Processes  Threads"
-    Write-Host $global:graph[3][0] -NoNewline; Write-Host "" $global:graph[3][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[3][11] "      " -NoNewline; Write-Host $prossnum "     " $threadnum -ForegroundColor Blue
-    Write-Host $global:graph[4][0] -NoNewline; Write-Host "" $global:graph[4][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[4][11]
-    Write-Host $global:graph[5][0] -NoNewline; Write-Host "" $global:graph[5][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[5][11]
-    Write-Host $global:graph[6][0] -NoNewline; Write-Host "" $global:graph[6][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[6][11]
-    Write-Host $global:graph[7][0] -NoNewline; Write-Host "" $global:graph[7][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[7][11]
-    Write-Host $global:graph[8][0] -NoNewline; Write-Host "" $global:graph[8][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[8][11]
-    Write-Host $global:graph[9][0] -NoNewline; Write-Host "" $global:graph[9][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[9][11]
-    Write-Host $global:graph[10][0] -NoNewline; Write-Host "" $global:graph[10][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host $global:graph[10][11]
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[1][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[2][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+    Processes  Threads"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[3][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+       " -NoNewline; Write-Host $prossnum "     " $threadnum -ForegroundColor Blue
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[4][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[5][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[6][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[7][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[8][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[9][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
+    Write-Host "+" -NoNewline; Write-Host "" $global:graph[10][1,2,3,4,5,6,7,8,9,10] "" -ForegroundColor Blue -NoNewline; Write-Host "+"
     Write-Host $global:graph[11]     
     start-Sleep -Seconds $Invertal
 }
