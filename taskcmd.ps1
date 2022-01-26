@@ -1,11 +1,3 @@
-#############################################################################################################
-#                                                                                                           #
-# TaskCMD v0.1.2                                                                                            #
-# By Jacob Petrie                                                                                           #
-# Original by @Hames on https://superuser.com/questions/176624/linux-top-command-for-windows-powershell     #
-#                                                                                                           #
-#############################################################################################################
-
 $TotalList=6 # Processes it displays info on
 $Invertal=.7 # How often it updates in seconds
 $global:crow = 10 # Used for tracking the current row
