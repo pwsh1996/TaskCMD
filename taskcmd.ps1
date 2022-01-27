@@ -2,7 +2,12 @@ $global:crow = 10 # Used for tracking the current row
 $global:graph = @(@("+","+","C","P","U","+","+","+","+","%","+","+"),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@(" "," "," "," "," "," "," "," "," "," "),@("+","+","+","+","+","+","+","+","+","+","+","+"))
 $cpuinfo = Get-CimInstance -ClassName Win32_Processor 
 
-function updaterow10 { #Updates the 10th row
+function updatedata { #Updates the rows
+    for ($r = $global:crow;$r -lt 10;$r++){ #moves the rows one step down
+        for ($i = 1; $i -le 10; $i++){
+            $global:graph[$i][$r-1] = $global:graph[$i][$r]
+        }
+    }
         if ($global:cpu -ge 50){
             if($global:cpu -ge 70){
                 if ($global:cpu -ge 80){ 
@@ -139,54 +144,8 @@ function updaterow10 { #Updates the 10th row
                 } 
             }
         }
-    if ($global:crow -gt 1){ #updates the current row until it gets to 1
+    if  ($global:crow -gt 1){ #updates the current row until it gets to 1
         $global:crow--
-    }
-}
-
-function copyRow10ToRow9 { # Copies Row 10 to Row 9
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][8] = $global:graph[$i][9]
-    }
-}
-function copyRow9ToRow8 { # Copies Row 9 to Row 8
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][7] = $global:graph[$i][8]
-    }
-}
-function copyRow8ToRow7 { # Copies Row 8 to Row 7
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][6] = $global:graph[$i][7]
-    }
-}
-function copyRow7ToRow6 { # Copies Row 7 to Row 6
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][5] = $global:graph[$i][6]
-    }
-}
-function copyRow6ToRow5 { # Copies Row 6 to Row 5
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][4] = $global:graph[$i][5]
-    }
-}
-function copyRow5ToRow4 { # Copies Row 5 to Row 4
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][3] = $global:graph[$i][4]
-    }
-}
-function copyRow4ToRow3 { # Copies Row 4 to Row 3
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][2] = $global:graph[$i][3]
-    }
-}
-function copyRow3ToRow2 { # Copies Row 3 to Row 2
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][1] = $global:graph[$i][2]
-    }
-}
-function copyRow2ToRow1 { # Copies Row 2 to Row 1
-    for ($i = 1; $i -le 10; $i++){
-        $global:graph[$i][0] = $global:graph[$i][1]
     }
 }
 
@@ -200,102 +159,8 @@ While ($true) {
     #Displays the Total CPU Utilization
     $global:cpu = [Math]::round(($countersamples | Where-Object {$_.path -match "processor\(_to"}).CookedValue)
     
-    #update the graph data
-    if ($global:crow -eq 10){
+    updatedata #update the graph data
 
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 9) {
-
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 8) {
-        
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 7) {
-
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 6) {
-
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 5) {
-
-        copyRow6ToRow5
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 4) {
-
-        copyRow5ToRow4
-        copyRow6ToRow5
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 3) {
-        
-        copyRow4ToRow3
-        copyRow5ToRow4
-        copyRow6ToRow5
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10 
-
-    }
-    elseif ($global:crow -eq 2) {
-        
-        copyRow3ToRow2
-        copyRow4ToRow3
-        copyRow5ToRow4
-        copyRow6ToRow5
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
-    elseif ($global:crow -eq 1) {
-
-        copyRow2ToRow1
-        copyRow3ToRow2
-        copyRow4ToRow3
-        copyRow5ToRow4
-        copyRow6ToRow5
-        copyRow7ToRow6
-        copyRow8ToRow7
-        copyRow9ToRow8
-        copyRow10ToRow9
-        updaterow10
-
-    }
     Clear-Host
     #Draws the Graph
     $CounterSamples | Group-Object { Split-Path $_.Path } | Where-Object {$_.Group[1].InstanceName -notmatch "^Idle|_Total|System$"} | Sort-Object -Property {$_.Group[1].CookedValue} -Descending | Select-Object -First 6 | Format-Table @{Name="ProcessId";Expression={$_.Group[0].CookedValue}},@{Name="ProcessorUsage";Expression={[System.Math]::Round($_.Group[1].CookedValue/1/$env:NUMBER_OF_PROCESSORS,2)}},@{Name="ProcessName";Expression={$_.Group[1].InstanceName}}
