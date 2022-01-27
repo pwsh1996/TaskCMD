@@ -3,7 +3,6 @@ $global:graph = @(@("+","+","C","P","U","+","+","+","+","%","+","+"),@(" "," ","
 $cpuinfo = Get-CimInstance -ClassName Win32_Processor 
 
 function updaterow10 { #Updates the 10th row
-    Process {
         if ($global:cpu -ge 50){
             if($global:cpu -ge 70){
                 if ($global:cpu -ge 80){ 
@@ -140,6 +139,8 @@ function updaterow10 { #Updates the 10th row
                 } 
             }
         }
+    if ($global:crow -gt 1){ #updates the current row until it gets to 1
+        $global:crow--
     }
 }
 
@@ -203,14 +204,12 @@ While ($true) {
     if ($global:crow -eq 10){
 
         updaterow10
-        $global:crow = 9
 
     }
     elseif ($global:crow -eq 9) {
 
         copyRow10ToRow9
         updaterow10
-        $global:crow = 8
 
     }
     elseif ($global:crow -eq 8) {
@@ -218,7 +217,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 7
 
     }
     elseif ($global:crow -eq 7) {
@@ -227,7 +225,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 6
 
     }
     elseif ($global:crow -eq 6) {
@@ -237,7 +234,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 5
 
     }
     elseif ($global:crow -eq 5) {
@@ -248,7 +244,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 4
 
     }
     elseif ($global:crow -eq 4) {
@@ -260,7 +255,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 3
 
     }
     elseif ($global:crow -eq 3) {
@@ -273,7 +267,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10 
-        $global:crow = 2
 
     }
     elseif ($global:crow -eq 2) {
@@ -287,7 +280,6 @@ While ($true) {
         copyRow9ToRow8
         copyRow10ToRow9
         updaterow10
-        $global:crow = 1
 
     }
     elseif ($global:crow -eq 1) {
