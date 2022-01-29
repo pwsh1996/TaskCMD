@@ -3,4 +3,5 @@ A PowerShell script to make a Task Manager like view of CPU usage (built for whe
 
 Not the most accurate, but gets the job done.
 
-![image](https://user-images.githubusercontent.com/51274282/151193922-09865573-9d3c-41ee-b8d8-d2d0b3958052.png)
+![image](https://user-images.githubusercontent.com/51274282/151638684-297e13c7-d288-4084-be74-ab308dd5e72f.png)
+
