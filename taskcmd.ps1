@@ -49,6 +49,8 @@ While ($true) {
     $CounterSamples = Get-Counter '\Process(*)\ID Process','\Process(*)\% Processor Time','\Processor(_total)\% Processor Time' | Select-Object -Expand CounterSamples
     
     $processinfo = Get-Process #gets the processes
+
+    $hands = 0
         
     #Displays the Total CPU Utilization
     $global:cpu = [Math]::round(($countersamples | Where-Object {$_.path -match "processor\(_to"}).CookedValue)
@@ -57,6 +59,10 @@ While ($true) {
     $last = [math]::Floor((($global:cpu * 10) % 100) / 25) #the size of the small block
 
     updatedata #update the graph data
+
+    foreach ($g in $processinfo){
+        $hands += ($g.handles)
+    }
 
     Clear-Host
     #Draws the Graph
@@ -81,8 +87,8 @@ While ($true) {
     }
     Write-Host $b[5]$b[2]"  " $cpuinfo.name
     Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[1] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]
-    Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[2] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]"   Processes  Threads"
-    Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[3] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]"      " -NoNewline; Write-Host ($processinfo).count "     " ($processinfo.Threads).count -ForegroundColor Blue
+    Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[2] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]"   Processes  Threads   Handles"
+    Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[3] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]"      " -NoNewline; Write-Host ($processinfo).count "     " ($processinfo.Threads).count "  " $hands -ForegroundColor Blue 
     Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[4] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]
     Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[5] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]
     Write-Host $b[4] -NoNewline; Write-Host "" $global:graph[6] "" -ForegroundColor Blue -NoNewline; Write-Host $b[4]
